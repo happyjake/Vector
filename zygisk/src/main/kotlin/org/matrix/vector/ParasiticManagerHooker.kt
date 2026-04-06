@@ -34,6 +34,8 @@ object ParasiticManagerHooker {
     private var managerPkgInfo: PackageInfo? = null
     private var managerFd: Int = -1
 
+    var isParasitic = false
+
     // Manually track Activity states since the system is unaware of our spoofed activities
     private val states = ConcurrentHashMap<String, Bundle>()
     private val persistentStates = ConcurrentHashMap<String, PersistableBundle>()
@@ -213,7 +215,7 @@ object ParasiticManagerHooker {
                             pkgInfo.activities
                                 ?.find {
                                     it.name ==
-                                        BuildConfig.ManagerPackageName + ".ui.activity.MainActivity"
+                                        BuildConfig.ManagerPackageName + ".ui.MainActivity"
                                 }
                                 ?.let {
                                     it.applicationInfo = pkgInfo.applicationInfo
@@ -224,7 +226,7 @@ object ParasiticManagerHooker {
                             arg.component =
                                 ComponentName(
                                     arg.component!!.packageName,
-                                    BuildConfig.ManagerPackageName + ".ui.activity.MainActivity",
+                                    BuildConfig.ManagerPackageName + ".ui.MainActivity",
                                 )
                         }
                     }
@@ -447,9 +449,26 @@ object ParasiticManagerHooker {
         val binderList = mutableListOf<IBinder>()
         return try {
             VectorServiceClient.requestInjectedManagerBinder(binderList)!!.use { pfd ->
-                managerFd = pfd.detachFd()
                 val managerService = ILSPManagerService.Stub.asInterface(binderList[0])
-                hookForManager(managerService)
+
+                if (isParasitic) {
+                    managerFd = pfd.detachFd()
+                    hookForManager(managerService)
+                } else {
+                    XposedHelpers.findAndHookMethod(
+                        LoadedApk::class.java,
+                        "getClassLoader",
+                        object : XC_MethodHook() {
+                            override fun afterHookedMethod(param: MethodHookParam<*>) {
+                                val mAppInfo = XposedHelpers.getObjectField(param.thisObject, "mApplicationInfo") as ApplicationInfo
+                                if (mAppInfo.packageName == BuildConfig.ManagerPackageName) {
+                                    val classLoader = param.result as ClassLoader
+                                    sendBinderToManager(classLoader, managerService.asBinder())
+                                }
+                            }
+                        }
+                    )
+                }
                 Utils.logD("Vector manager injected successfully into process.")
                 true
             }
