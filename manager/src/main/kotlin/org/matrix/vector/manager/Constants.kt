@@ -5,6 +5,7 @@ import org.lsposed.lspd.ILSPManagerService
 import kotlin.system.exitProcess
 
 object Constants {
+    const val TAG = "VectorManager"
     
     /**
      * Called via reflection by the Vector daemon to inject the service binder.

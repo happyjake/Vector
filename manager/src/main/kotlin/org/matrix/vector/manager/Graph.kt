@@ -1,17 +1,26 @@
 package org.matrix.vector.manager
 
+import android.annotation.SuppressLint
+import android.content.Context
+
 import org.lsposed.lspd.ILSPManagerService
 import org.matrix.vector.manager.ipc.DaemonClient
+import org.matrix.vector.manager.data.repository.AppRepository
 import org.matrix.vector.manager.data.repository.ModuleRepository
 
 /**
  * A lightweight Dependency Injection container.
  * This holds our singleton instances, where Constants.setBinder(binder) will initialize the DaemonClient.
  */
+@SuppressLint("StaticFieldLeak") // Application context doesn't leak
 object Graph {
-    // Initialized immediately to prevent UninitializedPropertyAccessException
+    lateinit var context: Context
+        private set
+
     val daemonClient = DaemonClient()
     val moduleRepository = ModuleRepository(daemonClient)
+    lateinit var appRepository: AppRepository
+        private set
 
     var service: ILSPManagerService? = null 
         set(value) {
@@ -22,4 +31,9 @@ object Graph {
                 moduleRepository.refreshEnabledModules()
             }
         }
+
+    fun init(applicationContext: Context) {
+        context = applicationContext
+        appRepository = AppRepository(daemonClient, context.packageManager)
+    }
 }

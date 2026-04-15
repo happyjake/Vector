@@ -5,6 +5,7 @@ import androidx.compose.material.icons.rounded.Extension
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Storefront
+import androidx.compose.material.icons.rounded.ReceiptLong
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -29,9 +30,10 @@ fun VectorApp() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val tabs = listOf(
-        Triple(MainRoute.Home, Icons.Rounded.Home, "Home"),
-        Triple(MainRoute.Modules, Icons.Rounded.Extension, "Modules"),
         Triple(MainRoute.Repo, Icons.Rounded.Storefront, "Repo"),
+        Triple(MainRoute.Modules, Icons.Rounded.Extension, "Modules"),
+        Triple(MainRoute.Home, Icons.Rounded.Home, "Home"),
+        Triple(MainRoute.Logs, Icons.Rounded.ReceiptLong, "Logs"),
         Triple(MainRoute.Settings, Icons.Rounded.Settings, "Settings")
     )
 
