@@ -20,6 +20,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.gson)
+    implementation(libs.okhttp)
+
     implementation(projects.services.managerService)
 
     implementation(libs.androidx.core.ktx)

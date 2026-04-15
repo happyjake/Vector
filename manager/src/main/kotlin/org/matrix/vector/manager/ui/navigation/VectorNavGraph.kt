@@ -15,6 +15,8 @@ import androidx.navigation.compose.composable
 import org.matrix.vector.manager.ui.screens.home.HomeScreen
 import org.matrix.vector.manager.ui.screens.modules.ModulesScreen
 import org.matrix.vector.manager.ui.screens.modules.ScopeScreen
+import org.matrix.vector.manager.ui.screens.repo.RepoDetailsScreen
+import org.matrix.vector.manager.ui.screens.repo.RepoScreen
 
 /**
  * Type-safe routing for the bottom navigation tabs.
@@ -39,7 +41,19 @@ fun VectorNavGraph(
         modifier = Modifier.padding(innerPadding)
     ) {
         composable(MainRoute.Repo.name) {
-            PlaceholderScreen("Repository Screen")
+            RepoScreen(
+                onModuleClick = { packageName ->
+                    // Navigation to the Repo Details page (Readme, Releases) which we will build later
+                    navController.navigate("RepoDetails/$packageName")
+                }
+            )
+        }
+        composable("RepoDetails/{packageName}") { backStackEntry ->
+            val pkg = backStackEntry.arguments?.getString("packageName") ?: return@composable
+            RepoDetailsScreen(
+                packageName = pkg,
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
         composable(MainRoute.Modules.name) {
             ModulesScreen(

@@ -2,11 +2,12 @@ package org.matrix.vector.manager
 
 import android.annotation.SuppressLint
 import android.content.Context
-
+import okhttp3.OkHttpClient
 import org.lsposed.lspd.ILSPManagerService
 import org.matrix.vector.manager.ipc.DaemonClient
 import org.matrix.vector.manager.data.repository.AppRepository
 import org.matrix.vector.manager.data.repository.ModuleRepository
+import org.matrix.vector.manager.data.repository.RepoRepository
 
 /**
  * A lightweight Dependency Injection container.
@@ -21,6 +22,7 @@ object Graph {
     val moduleRepository = ModuleRepository(daemonClient)
     lateinit var appRepository: AppRepository
         private set
+    val repoRepository = RepoRepository(OkHttpClient())
 
     var service: ILSPManagerService? = null 
         set(value) {
