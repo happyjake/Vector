@@ -13,10 +13,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import org.matrix.vector.manager.ui.screens.home.HomeScreen
+import org.matrix.vector.manager.ui.screens.logs.LogsScreen
 import org.matrix.vector.manager.ui.screens.modules.ModulesScreen
 import org.matrix.vector.manager.ui.screens.modules.ScopeScreen
 import org.matrix.vector.manager.ui.screens.repo.RepoDetailsScreen
 import org.matrix.vector.manager.ui.screens.repo.RepoScreen
+import org.matrix.vector.manager.ui.screens.settings.SettingsScreen
+
 
 /**
  * Type-safe routing for the bottom navigation tabs.
@@ -75,10 +78,10 @@ fun VectorNavGraph(
             HomeScreen()
         }
         composable(MainRoute.Logs.name) {
-            PlaceholderScreen("Logs Screen")
+            LogsScreen()
         }
         composable(MainRoute.Settings.name) {
-            PlaceholderScreen("Settings Screen")
+            SettingsScreen()
         }
     }
 }

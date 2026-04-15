@@ -8,6 +8,7 @@ import org.matrix.vector.manager.ipc.DaemonClient
 import org.matrix.vector.manager.data.repository.AppRepository
 import org.matrix.vector.manager.data.repository.ModuleRepository
 import org.matrix.vector.manager.data.repository.RepoRepository
+import org.matrix.vector.manager.data.repository.SettingsRepository
 
 /**
  * A lightweight Dependency Injection container.
@@ -23,6 +24,8 @@ object Graph {
     lateinit var appRepository: AppRepository
         private set
     val repoRepository = RepoRepository(OkHttpClient())
+    lateinit var settingsRepository: SettingsRepository
+        private set
 
     var service: ILSPManagerService? = null 
         set(value) {
@@ -36,6 +39,7 @@ object Graph {
 
     fun init(applicationContext: Context) {
         context = applicationContext
+        settingsRepository = SettingsRepository(context)
         appRepository = AppRepository(daemonClient, context.packageManager)
     }
 }
