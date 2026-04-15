@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -40,7 +41,6 @@ fun VectorApp() {
             TabItem(MainRoute.Modules, Icons.Rounded.Extension, "Modules"),
             TabItem(MainRoute.Home, Icons.Rounded.Home, "Home"),
             TabItem(MainRoute.Logs, Icons.Rounded.ReceiptLong, "Logs"),
-            TabItem(MainRoute.Settings, Icons.Rounded.Settings, "Settings"),
         )
 
     // Instead of using Scaffold's default bottomBar, we use a Box.
@@ -84,7 +84,8 @@ private fun FloatingBottomBar(
                 ),
         shape = CircleShape,
         // Make the background 90% opaque so content blurs/shows through slightly
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.90f),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.30f),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -140,7 +141,7 @@ private fun FancyBottomNavItem(item: TabItem, isSelected: Boolean, onClick: () -
                 .clickable(onClick = onClick) // 3. Make it clickable
                 .padding(horizontal = 16.dp, vertical = 12.dp) // 4. Add inner padding
                 .animateContentSize( // 5. MAGICAL LINE: Animates the width change when text
-                                     // appears/disappears!
+                    // appears/disappears!
                     animationSpec =
                         spring(
                             dampingRatio = Spring.DampingRatioMediumBouncy,

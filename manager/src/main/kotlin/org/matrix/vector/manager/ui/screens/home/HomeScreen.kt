@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Memory
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Smartphone
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -28,26 +29,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    // We inject the ViewModel using our custom factory mapped to the global Graph
-    viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
+    onNavigateToSettings: () -> Unit,
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory),
 ) {
-    // This observes the StateFlow. Whenever the daemon responds, this UI recomposes instantly.
     val uiState by viewModel.uiState.collectAsState()
 
-    // Smoothly animate between Loading, Activated, and NotInstalled states
-    AnimatedContent(
-        targetState = uiState,
-        transitionSpec = {
-            fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
-        },
-        label = "HomeStateAnimation",
-    ) { state ->
-        when (state) {
-            is HomeUiState.Loading -> LoadingScreen()
-            is HomeUiState.NotInstalled -> ErrorScreen()
-            is HomeUiState.Activated -> ActivatedDashboard(state)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {}, // Keep it empty for a clean look
+                actions = {
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(Icons.Rounded.Settings, contentDescription = "Settings")
+                    }
+                },
+                // Make the TopBar transparent so it blends with the background
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+            )
+        }
+    ) { innerPadding ->
+        // AnimatedContent goes INSIDE the Scaffold
+        AnimatedContent(
+            targetState = uiState,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
+            },
+            label = "HomeStateAnimation",
+            modifier = Modifier.padding(innerPadding).fillMaxSize(), // Apply padding here!
+        ) { state ->
+            when (state) {
+                is HomeUiState.Loading -> LoadingScreen()
+                is HomeUiState.NotInstalled -> ErrorScreen()
+                is HomeUiState.Activated -> ActivatedDashboard(state)
+            }
         }
     }
 }
@@ -94,7 +111,7 @@ private fun ActivatedDashboard(state: HomeUiState.Activated) {
     // LazyColumn provides a scrollable list, equivalent to ScrollView/RecyclerView
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(top = 64.dp, start = 16.dp, end = 16.dp, bottom = 100.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 100.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
@@ -107,7 +124,7 @@ private fun ActivatedDashboard(state: HomeUiState.Activated) {
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = "System Framework Manager",
+                    text = "Xposed Framework Manager",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

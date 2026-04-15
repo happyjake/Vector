@@ -29,7 +29,7 @@ class ModulesViewModelFactory : ViewModelProvider.Factory {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ModulesScreen(
     onModuleClick: (packageName: String, userId: Int) -> Unit,
@@ -38,56 +38,67 @@ fun ModulesScreen(
     val tabs by viewModel.userModulesTabs.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
+    Scaffold(topBar = { TopAppBar(title = { Text("Modules") }) }) { innerPadding ->
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+            return@Scaffold
         }
-        return
-    }
 
-    if (tabs.isEmpty()) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No modules found.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (tabs.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("No modules found.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            return@Scaffold
         }
-        return
-    }
 
-    val pagerState = rememberPagerState(pageCount = { tabs.size })
-    val coroutineScope = rememberCoroutineScope()
+        val pagerState = rememberPagerState(pageCount = { tabs.size })
+        val coroutineScope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Only render the TabRow if there are multiple users (e.g., Owner + Work Profile)
-        if (tabs.size > 1) {
-            TabRow(selectedTabIndex = pagerState.currentPage) {
-                tabs.forEachIndexed { index, tabData ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
-                        },
-                        text = { Text(tabData.user.name, fontWeight = FontWeight.Bold) },
-                    )
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            // Only render the TabRow if there are multiple users (e.g., Owner + Work Profile)
+            if (tabs.size > 1) {
+                TabRow(selectedTabIndex = pagerState.currentPage) {
+                    tabs.forEachIndexed { index, tabData ->
+                        Tab(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                            },
+                            text = { Text(tabData.user.name, fontWeight = FontWeight.Bold) },
+                        )
+                    }
                 }
             }
-        }
 
-        // Swipeable pager for the users
-        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
-            val modules = tabs[page].modules
+            // Swipeable pager for the users
+            HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+                val modules = tabs[page].modules
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding =
-                    PaddingValues(top = 8.dp, bottom = 100.dp), // Avoid overlapping bottom nav bar
-            ) {
-                items(modules, key = { it.packageName }) { module ->
-                    ModuleListItem(
-                        module = module,
-                        onClick = { onModuleClick(module.packageName, module.userId) },
-                    )
-                    HorizontalDivider(
-                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding =
+                        PaddingValues(
+                            top = 8.dp,
+                            bottom = 100.dp,
+                        ), // Avoid overlapping bottom nav bar
+                ) {
+                    items(modules, key = { it.packageName }) { module ->
+                        ModuleListItem(
+                            module = module,
+                            onClick = { onModuleClick(module.packageName, module.userId) },
+                        )
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
                 }
             }
         }

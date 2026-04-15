@@ -62,7 +62,9 @@ fun VectorNavGraph(navController: NavHostController, innerPadding: PaddingValues
 
             ScopeScreen(packageName = pkg, onNavigateBack = { navController.popBackStack() })
         }
-        composable(MainRoute.Home.name) { HomeScreen() }
+        composable(MainRoute.Home.name) {
+            HomeScreen(onNavigateToSettings = { navController.navigate(MainRoute.Settings.name) })
+        }
         composable(MainRoute.Logs.name) { LogsScreen() }
         composable(MainRoute.Settings.name) { SettingsScreen() }
     }
