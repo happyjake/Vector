@@ -14,7 +14,7 @@ import org.matrix.vector.manager.ipc.DaemonClient
 
 class SettingsViewModel(
     val settingsRepo: SettingsRepository,
-    private val daemonClient: DaemonClient
+    private val daemonClient: DaemonClient,
 ) : ViewModel() {
 
     private val _isStatusNotifEnabled = MutableStateFlow(false)
@@ -27,12 +27,16 @@ class SettingsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             if (daemonClient.isAlive) {
                 // Fetch status notification state
-                _isStatusNotifEnabled.value = daemonClient.enableStatusNotification().getOrDefault(false)
+                _isStatusNotifEnabled.value =
+                    daemonClient.enableStatusNotification().getOrDefault(false)
 
                 // Fetch hidden icons state from global settings
-                val hiddenIconSetting = Settings.Global.getInt(
-                    Graph.context.contentResolver, "show_hidden_icon_apps_enabled", 1
-                )
+                val hiddenIconSetting =
+                    Settings.Global.getInt(
+                        Graph.context.contentResolver,
+                        "show_hidden_icon_apps_enabled",
+                        1,
+                    )
                 _isHiddenIconsEnabled.value = hiddenIconSetting != 0
             }
         }
@@ -47,7 +51,10 @@ class SettingsViewModel(
 
     fun setHiddenIcons(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            val success = daemonClient.setHiddenIcon(!enabled).isSuccess // Daemon logic expects "hide" (inverted)
+            val success =
+                daemonClient
+                    .setHiddenIcon(!enabled)
+                    .isSuccess // Daemon logic expects "hide" (inverted)
             if (success) _isHiddenIconsEnabled.value = enabled
         }
     }

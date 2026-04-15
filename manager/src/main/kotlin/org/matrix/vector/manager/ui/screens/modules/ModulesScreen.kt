@@ -33,7 +33,7 @@ class ModulesViewModelFactory : ViewModelProvider.Factory {
 @Composable
 fun ModulesScreen(
     onModuleClick: (packageName: String, userId: Int) -> Unit,
-    viewModel: ModulesViewModel = viewModel(factory = ModulesViewModelFactory())
+    viewModel: ModulesViewModel = viewModel(factory = ModulesViewModelFactory()),
 ) {
     val tabs by viewModel.userModulesTabs.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -62,30 +62,32 @@ fun ModulesScreen(
                 tabs.forEachIndexed { index, tabData ->
                     Tab(
                         selected = pagerState.currentPage == index,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                        text = { Text(tabData.user.name, fontWeight = FontWeight.Bold) }
+                        onClick = {
+                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                        },
+                        text = { Text(tabData.user.name, fontWeight = FontWeight.Bold) },
                     )
                 }
             }
         }
 
         // Swipeable pager for the users
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
+        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
             val modules = tabs[page].modules
-            
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 8.dp, bottom = 100.dp) // Avoid overlapping bottom nav bar
+                contentPadding =
+                    PaddingValues(top = 8.dp, bottom = 100.dp), // Avoid overlapping bottom nav bar
             ) {
                 items(modules, key = { it.packageName }) { module ->
                     ModuleListItem(
                         module = module,
-                        onClick = { onModuleClick(module.packageName, module.userId) }
+                        onClick = { onModuleClick(module.packageName, module.userId) },
                     )
-                    HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
                 }
             }
         }
@@ -96,15 +98,13 @@ fun ModulesScreen(
 private fun ModuleListItem(module: InstalledModule, onClick: () -> Unit) {
     ListItem(
         modifier = Modifier.clickable { onClick() },
-        headlineContent = { 
-            Text(module.appName, fontWeight = FontWeight.Bold) 
-        },
+        headlineContent = { Text(module.appName, fontWeight = FontWeight.Bold) },
         supportingContent = {
             Column(modifier = Modifier.padding(top = 4.dp)) {
                 Text(
-                    text = module.versionName, 
+                    text = module.versionName,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 if (module.description.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -113,11 +113,12 @@ private fun ModuleListItem(module: InstalledModule, onClick: () -> Unit) {
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
-        }
-        // TODO: In a later step, we can use Coil/Glide to load `module.applicationInfo` into the `leadingContent` for the icon.
+        },
+        // TODO: In a later step, we can use Coil/Glide to load `module.applicationInfo` into the
+        // `leadingContent` for the icon.
     )
 }

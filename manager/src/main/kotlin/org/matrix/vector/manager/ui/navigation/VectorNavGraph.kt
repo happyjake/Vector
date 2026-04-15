@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import org.matrix.vector.manager.ui.screens.home.HomeScreen
 import org.matrix.vector.manager.ui.screens.logs.LogsScreen
 import org.matrix.vector.manager.ui.screens.modules.ModulesScreen
@@ -20,43 +19,35 @@ import org.matrix.vector.manager.ui.screens.repo.RepoDetailsScreen
 import org.matrix.vector.manager.ui.screens.repo.RepoScreen
 import org.matrix.vector.manager.ui.screens.settings.SettingsScreen
 
-
-/**
- * Type-safe routing for the bottom navigation tabs.
- */
+/** Type-safe routing for the bottom navigation tabs. */
 enum class MainRoute(val title: String) {
     Repo("Repo"),
     Modules("Modules"),
     Home("Home"),
     Logs("Logs"),
-    Settings("Settings")
+    Settings("Settings"),
 }
 
 @Composable
-fun VectorNavGraph(
-    navController: NavHostController,
-    innerPadding: PaddingValues
-) {
+fun VectorNavGraph(navController: NavHostController, innerPadding: PaddingValues) {
     // NavHost manages the swapping of screens
     NavHost(
         navController = navController,
         startDestination = MainRoute.Home.name,
-        modifier = Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding),
     ) {
         composable(MainRoute.Repo.name) {
             RepoScreen(
                 onModuleClick = { packageName ->
-                    // Navigation to the Repo Details page (Readme, Releases) which we will build later
+                    // Navigation to the Repo Details page (Readme, Releases) which we will build
+                    // later
                     navController.navigate("RepoDetails/$packageName")
                 }
             )
         }
         composable("RepoDetails/{packageName}") { backStackEntry ->
             val pkg = backStackEntry.arguments?.getString("packageName") ?: return@composable
-            RepoDetailsScreen(
-                packageName = pkg,
-                onNavigateBack = { navController.popBackStack() }
-            )
+            RepoDetailsScreen(packageName = pkg, onNavigateBack = { navController.popBackStack() })
         }
         composable(MainRoute.Modules.name) {
             ModulesScreen(
@@ -69,20 +60,11 @@ fun VectorNavGraph(
             val pkg = backStackEntry.arguments?.getString("packageName") ?: return@composable
             val uid = backStackEntry.arguments?.getString("userId")?.toIntOrNull() ?: 0
 
-            ScopeScreen(
-                packageName = pkg,
-                onNavigateBack = { navController.popBackStack() }
-            )
+            ScopeScreen(packageName = pkg, onNavigateBack = { navController.popBackStack() })
         }
-        composable(MainRoute.Home.name) {
-            HomeScreen()
-        }
-        composable(MainRoute.Logs.name) {
-            LogsScreen()
-        }
-        composable(MainRoute.Settings.name) {
-            SettingsScreen()
-        }
+        composable(MainRoute.Home.name) { HomeScreen() }
+        composable(MainRoute.Logs.name) { LogsScreen() }
+        composable(MainRoute.Settings.name) { SettingsScreen() }
     }
 }
 

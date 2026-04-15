@@ -4,15 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import okhttp3.OkHttpClient
 import org.lsposed.lspd.ILSPManagerService
-import org.matrix.vector.manager.ipc.DaemonClient
 import org.matrix.vector.manager.data.repository.AppRepository
 import org.matrix.vector.manager.data.repository.ModuleRepository
 import org.matrix.vector.manager.data.repository.RepoRepository
 import org.matrix.vector.manager.data.repository.SettingsRepository
+import org.matrix.vector.manager.ipc.DaemonClient
 
 /**
- * A lightweight Dependency Injection container.
- * This holds our singleton instances, where Constants.setBinder(binder) will initialize the DaemonClient.
+ * A lightweight Dependency Injection container. This holds our singleton instances, where
+ * Constants.setBinder(binder) will initialize the DaemonClient.
  */
 @SuppressLint("StaticFieldLeak") // Application context doesn't leak
 object Graph {
@@ -23,11 +23,12 @@ object Graph {
     val moduleRepository = ModuleRepository(daemonClient)
     lateinit var appRepository: AppRepository
         private set
+
     val repoRepository = RepoRepository(OkHttpClient())
     lateinit var settingsRepository: SettingsRepository
         private set
 
-    var service: ILSPManagerService? = null 
+    var service: ILSPManagerService? = null
         set(value) {
             field = value
             daemonClient.service = value

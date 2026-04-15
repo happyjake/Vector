@@ -165,6 +165,7 @@ tasks.register<KtfmtFormatTask>("format") {
         "services/*-service/build.gradle.kts",
     )
     dependsOn(":daemon:ktfmtFormat")
+    dependsOn(":manager:ktfmtFormat")
     dependsOn(":xposed:ktfmtFormat")
     dependsOn(":zygisk:ktfmtFormat")
 }

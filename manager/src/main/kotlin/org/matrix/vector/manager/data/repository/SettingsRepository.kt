@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SettingsRepository(context: Context) {
-    private val prefs: SharedPreferences = context.getSharedPreferences("vector_settings", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("vector_settings", Context.MODE_PRIVATE)
 
     // Theme Settings
     private val _themeMode = MutableStateFlow(prefs.getString("theme_mode", "system") ?: "system")
@@ -20,7 +21,8 @@ class SettingsRepository(context: Context) {
     val amoledBlack: StateFlow<Boolean> = _amoledBlack.asStateFlow()
 
     // Updates & Network
-    private val _updateChannel = MutableStateFlow(prefs.getString("update_channel", "stable") ?: "stable")
+    private val _updateChannel =
+        MutableStateFlow(prefs.getString("update_channel", "stable") ?: "stable")
     val updateChannel: StateFlow<String> = _updateChannel.asStateFlow()
 
     private val _dohEnabled = MutableStateFlow(prefs.getBoolean("doh_enabled", false))

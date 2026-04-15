@@ -14,9 +14,7 @@ val defaultManagerPackageName: String by rootProject.extra
 android {
     namespace = defaultManagerPackageName
 
-    defaultConfig {
-        buildConfigField("long", "BUILD_TIME", Instant.now().epochSecond.toString())
-    }
+    defaultConfig { buildConfigField("long", "BUILD_TIME", Instant.now().epochSecond.toString()) }
 }
 
 dependencies {

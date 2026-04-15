@@ -42,7 +42,7 @@ fun HomeScreen(
         transitionSpec = {
             fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
         },
-        label = "HomeStateAnimation"
+        label = "HomeStateAnimation",
     ) { state ->
         when (state) {
             is HomeUiState.Loading -> LoadingScreen()
@@ -64,26 +64,26 @@ private fun ErrorScreen() {
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
             imageVector = Icons.Rounded.ErrorOutline,
             contentDescription = "Not Installed",
             tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(72.dp)
+            modifier = Modifier.size(72.dp),
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Not Activated",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.error
+            color = MaterialTheme.colorScheme.error,
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "The daemon is not responding or not installed.",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -95,7 +95,7 @@ private fun ActivatedDashboard(state: HomeUiState.Activated) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(top = 64.dp, start = 16.dp, end = 16.dp, bottom = 100.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
             // Hero Header
@@ -104,12 +104,12 @@ private fun ActivatedDashboard(state: HomeUiState.Activated) {
                     text = "Vector",
                     style = MaterialTheme.typography.displayMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
                     text = "System Framework Manager",
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -118,26 +118,27 @@ private fun ActivatedDashboard(state: HomeUiState.Activated) {
             // Main Status Card
             ElevatedCard(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.elevatedCardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
-                modifier = Modifier.fillMaxWidth()
+                colors =
+                    CardDefaults.elevatedCardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Row(
                     modifier = Modifier.padding(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier.size(48.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.CheckCircle,
                             contentDescription = "Activated",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
@@ -146,12 +147,12 @@ private fun ActivatedDashboard(state: HomeUiState.Activated) {
                             text = "Activated",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                         Text(
                             text = "${state.xposedVersionName} (${state.xposedVersionCode})",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                         )
                     }
                 }
@@ -162,19 +163,19 @@ private fun ActivatedDashboard(state: HomeUiState.Activated) {
             // System Information Grid
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 InfoCard(
                     modifier = Modifier.weight(1f),
                     title = "Device",
                     subtitle = state.deviceName,
-                    icon = Icons.Rounded.Smartphone
+                    icon = Icons.Rounded.Smartphone,
                 )
                 InfoCard(
                     modifier = Modifier.weight(1f),
                     title = "System",
                     subtitle = state.androidVersion,
-                    icon = Icons.Rounded.Memory
+                    icon = Icons.Rounded.Memory,
                 )
             }
         }
@@ -186,33 +187,31 @@ private fun InfoCard(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
-    icon: ImageVector
+    icon: ImageVector,
 ) {
     OutlinedCard(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = Color.Transparent
-        )
+        colors = CardDefaults.outlinedCardColors(containerColor = Color.Transparent),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(28.dp),
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }

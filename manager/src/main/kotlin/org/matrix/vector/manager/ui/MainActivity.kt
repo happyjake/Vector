@@ -9,7 +9,7 @@ import org.matrix.vector.manager.ui.theme.VectorTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Enables edge-to-edge drawing. 
+        // Enables edge-to-edge drawing.
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
@@ -17,9 +17,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             // Wraps our app in Material 3 Dynamic Colors
-            VectorTheme {
-                VectorApp()
-            }
+            VectorTheme { VectorApp() }
         }
     }
 }

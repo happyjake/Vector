@@ -214,8 +214,7 @@ object ParasiticManagerHooker {
                                 getManagerPkgInfo(arg.applicationInfo) ?: return@forEachIndexed
                             pkgInfo.activities
                                 ?.find {
-                                    it.name ==
-                                        BuildConfig.ManagerPackageName + ".ui.MainActivity"
+                                    it.name == BuildConfig.ManagerPackageName + ".ui.MainActivity"
                                 }
                                 ?.let {
                                     it.applicationInfo = pkgInfo.applicationInfo
@@ -460,13 +459,17 @@ object ParasiticManagerHooker {
                         "getClassLoader",
                         object : XC_MethodHook() {
                             override fun afterHookedMethod(param: MethodHookParam<*>) {
-                                val mAppInfo = XposedHelpers.getObjectField(param.thisObject, "mApplicationInfo") as ApplicationInfo
+                                val mAppInfo =
+                                    XposedHelpers.getObjectField(
+                                        param.thisObject,
+                                        "mApplicationInfo",
+                                    ) as ApplicationInfo
                                 if (mAppInfo.packageName == BuildConfig.ManagerPackageName) {
                                     val classLoader = param.result as ClassLoader
                                     sendBinderToManager(classLoader, managerService.asBinder())
                                 }
                             }
-                        }
+                        },
                     )
                 }
                 Utils.logD("Vector manager injected successfully into process.")

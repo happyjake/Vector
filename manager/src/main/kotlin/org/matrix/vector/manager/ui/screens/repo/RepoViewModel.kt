@@ -11,31 +11,30 @@ import kotlinx.coroutines.launch
 import org.matrix.vector.manager.data.model.OnlineModule
 import org.matrix.vector.manager.data.repository.RepoRepository
 
-class RepoViewModel(
-    private val repoRepository: RepoRepository
-) : ViewModel() {
+class RepoViewModel(private val repoRepository: RepoRepository) : ViewModel() {
 
     val searchQuery = MutableStateFlow("")
     val isRefreshing: StateFlow<Boolean> = repoRepository.isRefreshing
 
     // Combine the raw list from the repository with the search query
-    val filteredModules: StateFlow<List<OnlineModule>> = combine(
-        repoRepository.onlineModules, searchQuery
-    ) { modules, query ->
-        if (query.isBlank()) {
-            modules
-        } else {
-            modules.filter {
-                it.description.contains(query, ignoreCase = true) ||
-                it.name.contains(query, ignoreCase = true) ||
-                (it.summary?.contains(query, ignoreCase = true) == true)
+    val filteredModules: StateFlow<List<OnlineModule>> =
+        combine(repoRepository.onlineModules, searchQuery) { modules, query ->
+                if (query.isBlank()) {
+                        modules
+                    } else {
+                        modules.filter {
+                            it.description.contains(query, ignoreCase = true) ||
+                                it.name.contains(query, ignoreCase = true) ||
+                                (it.summary?.contains(query, ignoreCase = true) == true)
+                        }
+                    }
+                    .sortedBy { it.description.lowercase() } // Sort by name alphabetically
             }
-        }.sortedBy { it.description.lowercase() } // Sort by name alphabetically
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList(),
+            )
 
     init {
         // Fetch on startup if empty
@@ -45,8 +44,6 @@ class RepoViewModel(
     }
 
     fun refresh() {
-        viewModelScope.launch {
-            repoRepository.refreshModules()
-        }
+        viewModelScope.launch { repoRepository.refreshModules() }
     }
 }

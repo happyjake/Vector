@@ -2,9 +2,7 @@ package org.matrix.vector.manager.data.model
 
 import android.content.pm.ApplicationInfo
 
-/**
- * Pure Kotlin data class representing an installed Xposed module.
- */
+/** Pure Kotlin data class representing an installed Xposed module. */
 data class InstalledModule(
     val packageName: String,
     val userId: Int,
@@ -16,5 +14,5 @@ data class InstalledModule(
     val targetVersion: Int,
     val isLegacy: Boolean,
     val isEnabled: Boolean,
-    val applicationInfo: ApplicationInfo // Kept for Icon loading via Coil/Glide later
+    val applicationInfo: ApplicationInfo, // Kept for Icon loading via Coil/Glide later
 )

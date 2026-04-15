@@ -42,31 +42,34 @@ class RepoDetailsViewModelFactory(private val packageName: String) : ViewModelPr
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun RepoDetailsScreen(
-    packageName: String,
-    onNavigateBack: () -> Unit
-) {
-    val viewModel: RepoDetailsViewModel = viewModel(factory = RepoDetailsViewModelFactory(packageName))
+fun RepoDetailsScreen(packageName: String, onNavigateBack: () -> Unit) {
+    val viewModel: RepoDetailsViewModel =
+        viewModel(factory = RepoDetailsViewModelFactory(packageName))
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Column {
-                        val title = if (uiState is RepoDetailsUiState.Success) 
-                            (uiState as RepoDetailsUiState.Success).module.description 
-                        else "Details"
-                        
+                        val title =
+                            if (uiState is RepoDetailsUiState.Success)
+                                (uiState as RepoDetailsUiState.Success).module.description
+                            else "Details"
+
                         Text(title, style = MaterialTheme.typography.titleMedium, maxLines = 1)
-                        Text(packageName, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            packageName,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
             )
         }
     ) { innerPadding ->
@@ -78,13 +81,14 @@ fun RepoDetailsScreen(
                 is RepoDetailsUiState.Error -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text("Failed to load module details.", color = MaterialTheme.colorScheme.error)
+                        Text(
+                            "Failed to load module details.",
+                            color = MaterialTheme.colorScheme.error,
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { viewModel.fetchDetails() }) {
-                            Text("Retry")
-                        }
+                        Button(onClick = { viewModel.fetchDetails() }) { Text("Retry") }
                     }
                 }
                 is RepoDetailsUiState.Success -> {
@@ -108,15 +112,12 @@ private fun RepoDetailsContent(module: OnlineModule) {
                 Tab(
                     selected = pagerState.currentPage == index,
                     onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                    text = { Text(title) }
+                    text = { Text(title) },
                 )
             }
         }
 
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
+        HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
             when (page) {
                 0 -> ReadmeTab(htmlContent = module.readmeHTML)
                 1 -> ReleasesTab(releases = module.releases)
@@ -150,7 +151,8 @@ private fun ReadmeTab(htmlContent: String?) {
         },
         update = { webView ->
             // Minimal HTML wrapper for dark-mode friendly text
-            val wrapper = """
+            val wrapper =
+                """
                 <html>
                 <head>
                     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -163,11 +165,12 @@ private fun ReadmeTab(htmlContent: String?) {
                 </head>
                 <body>$htmlContent</body>
                 </html>
-            """.trimIndent()
+            """
+                    .trimIndent()
 
             webView.loadDataWithBaseURL("https://github.com", wrapper, "text/html", "UTF-8", null)
         },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     )
 }
 
@@ -185,25 +188,37 @@ private fun ReleasesTab(releases: List<Release>) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         items(releases, key = { it.name ?: it.hashCode() }) { release ->
             OutlinedCard(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = release.name ?: "Unknown Version", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(text = release.publishedAt?.take(10) ?: "", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    
+                    Text(
+                        text = release.name ?: "Unknown Version",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = release.publishedAt?.take(10) ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     if (!release.url.isNullOrBlank()) {
                         Button(
                             onClick = {
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(release.url))
                                 context.startActivity(intent)
                             },
-                            modifier = Modifier.align(Alignment.End)
+                            modifier = Modifier.align(Alignment.End),
                         ) {
-                            Icon(Icons.Rounded.OpenInBrowser, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Icon(
+                                Icons.Rounded.OpenInBrowser,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
                             Spacer(Modifier.width(8.dp))
                             Text("View on GitHub")
                         }
@@ -226,9 +241,12 @@ private fun InformationTab(module: OnlineModule) {
                     headlineContent = { Text("Homepage") },
                     supportingContent = { Text(module.homepageUrl) },
                     leadingContent = { Icon(Icons.Rounded.Language, contentDescription = null) },
-                    modifier = Modifier.clickable {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(module.homepageUrl)))
-                    }
+                    modifier =
+                        Modifier.clickable {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW, Uri.parse(module.homepageUrl))
+                            )
+                        },
                 )
                 HorizontalDivider()
             }
@@ -241,9 +259,12 @@ private fun InformationTab(module: OnlineModule) {
                     headlineContent = { Text("Source Code") },
                     supportingContent = { Text(module.sourceUrl) },
                     leadingContent = { Icon(Icons.Rounded.Code, contentDescription = null) },
-                    modifier = Modifier.clickable {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(module.sourceUrl)))
-                    }
+                    modifier =
+                        Modifier.clickable {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW, Uri.parse(module.sourceUrl))
+                            )
+                        },
                 )
                 HorizontalDivider()
             }
@@ -254,11 +275,14 @@ private fun InformationTab(module: OnlineModule) {
             item {
                 ListItem(
                     headlineContent = { Text("Collaborators") },
-                    supportingContent = { 
-                        val names = module.collaborators.mapNotNull { it.name ?: it.login }.joinToString(", ")
-                        Text(names) 
+                    supportingContent = {
+                        val names =
+                            module.collaborators
+                                .mapNotNull { it.name ?: it.login }
+                                .joinToString(", ")
+                        Text(names)
                     },
-                    leadingContent = { Icon(Icons.Rounded.Group, contentDescription = null) }
+                    leadingContent = { Icon(Icons.Rounded.Group, contentDescription = null) },
                 )
                 HorizontalDivider()
             }

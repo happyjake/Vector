@@ -2,9 +2,7 @@ package org.matrix.vector.manager.data.model
 
 import android.content.pm.ApplicationInfo
 
-/**
- * Represents an installed application for the Scope configuration screen.
- */
+/** Represents an installed application for the Scope configuration screen. */
 data class AppInfo(
     val packageName: String,
     val userId: Int,
@@ -13,5 +11,5 @@ data class AppInfo(
     val isGame: Boolean,
     val isSelectedInScope: Boolean,
     val isRecommended: Boolean,
-    val applicationInfo: ApplicationInfo
+    val applicationInfo: ApplicationInfo,
 )

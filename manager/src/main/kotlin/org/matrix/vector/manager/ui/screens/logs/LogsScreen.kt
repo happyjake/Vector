@@ -35,9 +35,7 @@ class LogsViewModelFactory : ViewModelProvider.Factory {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun LogsScreen(
-    viewModel: LogsViewModel = viewModel(factory = LogsViewModelFactory())
-) {
+fun LogsScreen(viewModel: LogsViewModel = viewModel(factory = LogsViewModelFactory())) {
     val moduleLogs by viewModel.moduleLogs.collectAsState()
     val verboseLogs by viewModel.verboseLogs.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -58,7 +56,9 @@ fun LogsScreen(
                         Icon(
                             imageVector = Icons.Rounded.WrapText,
                             contentDescription = "Word Wrap",
-                            tint = if (wordWrapEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            tint =
+                                if (wordWrapEnabled) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     // Refresh Logs
@@ -66,22 +66,30 @@ fun LogsScreen(
                         Icon(Icons.Rounded.Refresh, contentDescription = "Refresh Logs")
                     }
                     // Clear Logs
-                    IconButton(onClick = { viewModel.clearLogs(verbose = pagerState.currentPage == 1) }) {
-                        Icon(Icons.Rounded.Delete, contentDescription = "Clear Logs", tint = MaterialTheme.colorScheme.error)
+                    IconButton(
+                        onClick = { viewModel.clearLogs(verbose = pagerState.currentPage == 1) }
+                    ) {
+                        Icon(
+                            Icons.Rounded.Delete,
+                            contentDescription = "Clear Logs",
+                            tint = MaterialTheme.colorScheme.error,
+                        )
                     }
-                }
+                },
             )
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            
+
             // Tab Row
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
                         selected = pagerState.currentPage == index,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                        text = { Text(title) }
+                        onClick = {
+                            coroutineScope.launch { pagerState.animateScrollToPage(index) }
+                        },
+                        text = { Text(title) },
                     )
                 }
             }
@@ -91,12 +99,12 @@ fun LogsScreen(
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text("Verbose Logging", style = MaterialTheme.typography.bodyMedium)
                     Switch(
                         checked = isVerboseEnabled,
-                        onCheckedChange = { viewModel.toggleVerbose(it) }
+                        onCheckedChange = { viewModel.toggleVerbose(it) },
                     )
                 }
                 HorizontalDivider()
@@ -108,10 +116,7 @@ fun LogsScreen(
                     CircularProgressIndicator()
                 }
             } else {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { page ->
+                HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
                     val logs = if (page == 0) moduleLogs else verboseLogs
                     LogViewer(logs = logs, wordWrap = wordWrapEnabled)
                 }
@@ -124,18 +129,19 @@ fun LogsScreen(
 private fun LogViewer(logs: List<String>, wordWrap: Boolean) {
     // If word wrap is false, we allow horizontal scrolling on the LazyColumn
     val horizontalScrollState = rememberScrollState()
-    
+
     // Apply horizontal scrolling if wordWrap is disabled
-    val modifier = if (!wordWrap) {
-        Modifier.fillMaxSize().horizontalScroll(horizontalScrollState)
-    } else {
-        Modifier.fillMaxSize()
-    }
+    val modifier =
+        if (!wordWrap) {
+            Modifier.fillMaxSize().horizontalScroll(horizontalScrollState)
+        } else {
+            Modifier.fillMaxSize()
+        }
 
     SelectionContainer {
         LazyColumn(
             modifier = modifier,
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         ) {
             items(logs) { line ->
                 Text(
@@ -144,7 +150,7 @@ private fun LogViewer(logs: List<String>, wordWrap: Boolean) {
                     fontSize = 12.sp,
                     softWrap = wordWrap,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(vertical = 2.dp)
+                    modifier = Modifier.padding(vertical = 2.dp),
                 )
             }
             // Bottom padding to avoid navigation bar collision

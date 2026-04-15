@@ -30,32 +30,24 @@ class RepoViewModelFactory : ViewModelProvider.Factory {
 @Composable
 fun RepoScreen(
     onModuleClick: (packageName: String) -> Unit,
-    viewModel: RepoViewModel = viewModel(factory = RepoViewModelFactory())
+    viewModel: RepoViewModel = viewModel(factory = RepoViewModelFactory()),
 ) {
     val modules by viewModel.filteredModules.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Repository") }
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = { TopAppBar(title = { Text("Repository") }) }) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            
+
             // Search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.searchQuery.value = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 placeholder = { Text("Search repository...") },
                 leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
                 singleLine = true,
-                shape = MaterialTheme.shapes.large
+                shape = MaterialTheme.shapes.large,
             )
 
             // Progress or List
@@ -66,11 +58,13 @@ fun RepoScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 100.dp)
+                    contentPadding = PaddingValues(bottom = 100.dp),
                 ) {
                     items(modules, key = { it.name }) { module ->
                         RepoListItem(module = module, onClick = { onModuleClick(module.name) })
-                        HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                        )
                     }
                 }
             }
@@ -82,15 +76,13 @@ fun RepoScreen(
 private fun RepoListItem(module: OnlineModule, onClick: () -> Unit) {
     ListItem(
         modifier = Modifier.clickable { onClick() },
-        headlineContent = {
-            Text(module.description, fontWeight = FontWeight.Bold)
-        },
+        headlineContent = { Text(module.description, fontWeight = FontWeight.Bold) },
         supportingContent = {
             Column(modifier = Modifier.padding(top = 4.dp)) {
                 Text(
                     text = module.name,
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 if (!module.summary.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -99,19 +91,21 @@ private fun RepoListItem(module: OnlineModule, onClick: () -> Unit) {
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                
+
                 if (!module.latestReleaseTime.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Updated: ${module.latestReleaseTime.take(10)}", // Just grabbing the YYYY-MM-DD
+                        text =
+                            "Updated: ${module.latestReleaseTime.take(10)}", // Just grabbing the
+                                                                             // YYYY-MM-DD
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     )
                 }
             }
-        }
+        },
     )
 }

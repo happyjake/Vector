@@ -26,17 +26,15 @@ class ScopeViewModelFactory(private val packageName: String) : ViewModelProvider
         return ScopeViewModel(
             modulePackageName = packageName,
             daemonClient = Graph.daemonClient,
-            appRepository = Graph.appRepository
-        ) as T
+            appRepository = Graph.appRepository,
+        )
+            as T
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScopeScreen(
-    packageName: String,
-    onNavigateBack: () -> Unit
-) {
+fun ScopeScreen(packageName: String, onNavigateBack: () -> Unit) {
     val viewModel: ScopeViewModel = viewModel(factory = ScopeViewModelFactory(packageName))
 
     // Observe state from ViewModel
@@ -48,51 +46,51 @@ fun ScopeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Column {
                         Text("Scope Configuration", style = MaterialTheme.typography.titleMedium)
-                        Text(packageName, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            packageName,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
             )
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
-            
+
             // 1. Search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { viewModel.searchQuery.value = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 placeholder = { Text("Search apps...") },
                 leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
                 singleLine = true,
-                shape = MaterialTheme.shapes.large
+                shape = MaterialTheme.shapes.large,
             )
 
             // 2. Filter Chips
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 FilterChip(
                     selected = showSystemApps,
                     onClick = { viewModel.showSystemApps.value = !showSystemApps },
-                    label = { Text("System Apps") }
+                    label = { Text("System Apps") },
                 )
                 FilterChip(
                     selected = showGames,
                     onClick = { viewModel.showGames.value = !showGames },
-                    label = { Text("Games") }
+                    label = { Text("Games") },
                 )
             }
 
@@ -106,12 +104,12 @@ fun ScopeScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 100.dp)
+                    contentPadding = PaddingValues(bottom = 100.dp),
                 ) {
                     items(filteredApps, key = { "${it.packageName}_${it.userId}" }) { app ->
                         AppScopeListItem(
                             appInfo = app,
-                            onToggle = { isChecked -> viewModel.toggleAppInScope(app, isChecked) }
+                            onToggle = { isChecked -> viewModel.toggleAppInScope(app, isChecked) },
                         )
                     }
                 }
@@ -121,29 +119,22 @@ fun ScopeScreen(
 }
 
 @Composable
-private fun AppScopeListItem(
-    appInfo: AppInfo,
-    onToggle: (Boolean) -> Unit
-) {
+private fun AppScopeListItem(appInfo: AppInfo, onToggle: (Boolean) -> Unit) {
     ListItem(
         modifier = Modifier.clickable { onToggle(!appInfo.isSelectedInScope) },
-        headlineContent = {
-            Text(appInfo.appName, fontWeight = FontWeight.Bold)
-        },
+        headlineContent = { Text(appInfo.appName, fontWeight = FontWeight.Bold) },
         supportingContent = {
             Text(appInfo.packageName, style = MaterialTheme.typography.bodySmall)
         },
         trailingContent = {
-            Checkbox(
-                checked = appInfo.isSelectedInScope,
-                onCheckedChange = { onToggle(it) }
-            )
+            Checkbox(checked = appInfo.isSelectedInScope, onCheckedChange = { onToggle(it) })
         },
-        colors = ListItemDefaults.colors(
-            containerColor = if (appInfo.isSelectedInScope) 
-                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f) 
-            else 
-                MaterialTheme.colorScheme.surface
-        )
+        colors =
+            ListItemDefaults.colors(
+                containerColor =
+                    if (appInfo.isSelectedInScope)
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
+                    else MaterialTheme.colorScheme.surface
+            ),
     )
 }

@@ -11,13 +11,15 @@ import org.matrix.vector.manager.data.repository.RepoRepository
 
 sealed interface RepoDetailsUiState {
     data object Loading : RepoDetailsUiState
+
     data class Success(val module: OnlineModule) : RepoDetailsUiState
+
     data object Error : RepoDetailsUiState
 }
 
 class RepoDetailsViewModel(
     private val packageName: String,
-    private val repoRepository: RepoRepository
+    private val repoRepository: RepoRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<RepoDetailsUiState>(RepoDetailsUiState.Loading)
