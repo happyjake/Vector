@@ -98,9 +98,8 @@ private fun RepoListItem(module: OnlineModule, onClick: () -> Unit) {
                 if (!module.latestReleaseTime.isNullOrBlank()) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text =
-                            "Updated: ${module.latestReleaseTime.take(10)}", // Just grabbing the
-                                                                             // YYYY-MM-DD
+                        text = "Updated: ${module.latestReleaseTime.take(10)}", // Just grabbing the
+                        // YYYY-MM-DD
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     )
