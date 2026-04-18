@@ -18,6 +18,7 @@ import org.matrix.vector.manager.ui.screens.modules.ScopeScreen
 import org.matrix.vector.manager.ui.screens.repo.RepoDetailsScreen
 import org.matrix.vector.manager.ui.screens.repo.RepoScreen
 import org.matrix.vector.manager.ui.screens.settings.SettingsScreen
+import org.matrix.vector.manager.ui.screens.splash.SplashScreen
 
 /** Type-safe routing for the bottom navigation tabs. */
 enum class MainRoute(val title: String) {
@@ -33,9 +34,21 @@ fun VectorNavGraph(navController: NavHostController, innerPadding: PaddingValues
     // NavHost manages the swapping of screens
     NavHost(
         navController = navController,
-        startDestination = MainRoute.Home.name,
+        startDestination = "Splash",
         modifier = Modifier.padding(innerPadding),
     ) {
+        composable("Splash") {
+            SplashScreen(
+                onSplashFinished = {
+                    // Navigate to Home and remove Splash from the backstack
+                    // so the user can't press "Back" to return to the splash screen.
+                    navController.navigate(MainRoute.Home.name) {
+                        popUpTo("Splash") { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable(MainRoute.Repo.name) {
             RepoScreen(
                 onModuleClick = { packageName ->

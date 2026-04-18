@@ -34,6 +34,9 @@ private data class TabItem(val route: MainRoute, val icon: ImageVector, val labe
 @Composable
 fun VectorApp() {
     val navController = rememberNavController()
+    // Observe the current route
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     val tabs =
         listOf(
@@ -50,12 +53,14 @@ fun VectorApp() {
         // The main content area
         VectorNavGraph(navController = navController, innerPadding = PaddingValues(0.dp))
 
-        // The Floating Bottom Bar pinned to the bottom center
-        FloatingBottomBar(
-            tabs = tabs,
-            navController = navController,
-            modifier = Modifier.align(Alignment.BottomCenter),
-        )
+        if (currentRoute != "Splash") {
+            // The Floating Bottom Bar pinned to the bottom center
+            FloatingBottomBar(
+                tabs = tabs,
+                navController = navController,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
     }
 }
 

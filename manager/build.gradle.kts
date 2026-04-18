@@ -15,12 +15,7 @@ android {
     namespace = defaultManagerPackageName
 
     defaultConfig { buildConfigField("long", "BUILD_TIME", Instant.now().epochSecond.toString()) }
-    sourceSets {
-        getByName("main") {
-          res.srcDir("../daemon/src/main/res") 
-        }
-    }
-
+    sourceSets { getByName("main") { res.srcDir("../daemon/src/main/res") } }
 }
 
 dependencies {
