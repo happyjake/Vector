@@ -2,13 +2,8 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="530"
-    android:viewportHeight="530">
-
-<group
-    android:translateX="88.5"
-    android:translateY="88.5">
-    <!-- The group translates the 353x353 artwork into the center of the 530x530 viewport (Padding) -->
+    android:viewportWidth="353"
+    android:viewportHeight="353">
 
     <path
         android:name="path1"
@@ -466,5 +461,4 @@
         android:name="path115"
         android:fillColor="#d3efaa"
         android:pathData="M 265.38 254.31 C265.40,254.25 265.41,254.19 265.43,254.13 C265.45,254.11 265.46,254.08 265.47,254.06 C265.66,253.69 265.84,253.32 266.01,252.96 C265.90,253.23 265.79,253.47 265.67,253.70 C265.57,253.89 265.47,254.10 265.38,254.31 Z" />
-  </group>
 </vector>

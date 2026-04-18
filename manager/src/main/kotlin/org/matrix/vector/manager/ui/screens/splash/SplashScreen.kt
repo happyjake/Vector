@@ -52,7 +52,7 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
         // We use the monochrome or foreground drawable depending on how you styled it.
         // If your foreground has multiple colors, change `tint` to Color.Unspecified
         Icon(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            painter = painterResource(id = R.drawable.ic_winged_victory),
             contentDescription = "Vector Splash Logo",
             tint = Color.Unspecified,
             modifier = Modifier.fillMaxSize().scale(scaleAnim).alpha(alphaAnim),
