@@ -10,6 +10,27 @@ allow {dex2oat installd isolated_app shell} xposed_file {file dir} *
 allow dex2oat {unlabeled tmpfs} file *
 allow zygote dex2oat unix_stream_socket *
 
+# Android 16 restricts memfd+PROT_EXEC (`file:execute` on domain_tmpfs) and
+# anonymous exec mappings (`self:process execmem`) for zygote-forked
+# processes. Dobby's memfd-based trampoline allocator (needed because MDWE
+# blocks the mprotect-based path) requires both. Without these rules the
+# first mmap(PROT_EXEC, memfd) returns EACCES and every hook install
+# silently fails, system_server fork-loops.
+allow zygote zygote_tmpfs file { execute execute_no_trans }
+allow zygote self process execmem
+allow system_server system_server_tmpfs file { execute execute_no_trans }
+allow system_server self process execmem
+allow untrusted_app untrusted_app_tmpfs file { execute execute_no_trans }
+allow untrusted_app self process execmem
+allow untrusted_app_all untrusted_app_all_tmpfs file { execute execute_no_trans }
+allow untrusted_app_all self process execmem
+allow priv_app priv_app_tmpfs file { execute execute_no_trans }
+allow priv_app self process execmem
+allow platform_app platform_app_tmpfs file { execute execute_no_trans }
+allow platform_app self process execmem
+allow isolated_app isolated_app_tmpfs file { execute execute_no_trans }
+allow isolated_app self process execmem
+
 type xposed_data file_type
 typeattribute xposed_data mlstrustedobject
 allow * xposed_data {file dir} *
