@@ -13,3 +13,17 @@ allow zygote dex2oat unix_stream_socket *
 type xposed_data file_type
 typeattribute xposed_data mlstrustedobject
 allow * xposed_data {file dir} *
+
+# Android 16+ hardened sepolicy denies `process:execmem` for most
+# zygote-forked app domains, so LSPlant cannot allocate R+X trampolines
+# for method hooks (it fork-loops system_server and other processes).
+# Grant execmem to the standard app domains. Minimum viable patch to
+# make the framework work on hardened A16+ ROMs.
+allow zygote self process execmem
+allow system_server self process execmem
+allow untrusted_app self process execmem
+allow untrusted_app_all self process execmem
+allow priv_app self process execmem
+allow platform_app self process execmem
+allow isolated_app self process execmem
+allow ephemeral_app self process execmem
